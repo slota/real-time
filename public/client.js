@@ -12,6 +12,10 @@ socket.on('statusMessage', function (message) {
   statusMessage.innerText = message;
 });
 
+socket.on('voteCount', function (votes) {
+  console.log(votes);
+});
+
 for (var i = 0; i < buttons.length; i++) {
   buttons[i].addEventListener('click', function () {
     socket.send('voteCast', this.innerText);
