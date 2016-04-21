@@ -37,8 +37,8 @@ describe('Server', () => {
 
       this.request.get('/', (error, response) => {
         if (error) { done(error); }
-          assert(response.body.includes("A"),
-           `"${response.body}" does not include "${title}".`);
+          assert(response.body.includes("Please enter a poll title:", "Enter an answer:"),
+           `"${response.body}" does not include "${"Please enter a poll title:"}".`);
           done();
       });
     });
