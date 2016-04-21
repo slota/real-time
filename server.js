@@ -21,6 +21,11 @@ app.get('/', function (req, res){
   res.sendFile(__dirname + '/public/index.html');
 });
 
+app.set('port', process.env.PORT || 3000);
+app.get('/', (request, response) => {
+  response.send(app.locals.title);
+});
+
 
 io.on('connection', function (socket) {
   console.log('A user has connected.', io.engine.clientsCount);
