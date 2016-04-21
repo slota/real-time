@@ -23,15 +23,23 @@ describe('Server', () => {
     assert(app);
   });
 
-
-
-
   describe('GET /', () => {
     it('should return a 200', (done) => {
       this.request.get('/', (error, response) => {
         if (error) { done(error); }
         assert.equal(response.statusCode, 200);
         done();
+      });
+    });
+
+    it('should have a body with the name of the application', (done) => {
+      var title = app.locals.title;
+
+      this.request.get('/', (error, response) => {
+        if (error) { done(error); }
+          assert(response.body.includes("A"),
+           `"${response.body}" does not include "${title}".`);
+          done();
       });
     });
   });
