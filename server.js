@@ -17,15 +17,15 @@ var votes = {};
 
 app.use(express.static('public'));
 
-app.get('/', function (req, res){
-  res.sendFile(__dirname + '/public/index.html');
+app.get('/', function (req, response){
+  // response.sendFile(__dirname + '/public/index.html');
+  response.send('Hello World!');
 });
+
+// app.get('/', (request, response) => {
+// });
 
 app.set('port', process.env.PORT || 3000);
-app.get('/', (request, response) => {
-  response.send(app.locals.title);
-});
-
 
 io.on('connection', function (socket) {
   console.log('A user has connected.', io.engine.clientsCount);
@@ -77,4 +77,4 @@ if (!module.parent) {
   });
 }
 
-module.exports = server;
+module.exports = app;
