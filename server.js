@@ -2,6 +2,7 @@ const http = require('http');
 const express = require('express');
 
 const app = express();
+var path =require('path')
 
 
 const port = process.env.PORT || 3000;
@@ -24,13 +25,19 @@ app.use(express.static('public'));
 // app.use(require('connect').bodyParser());
 
 
-app.post('/poll', function (req, response){
+app.post('/poll', function (req, res){
   console.log(req.body)
   // console.log(response)
   // response.sendFile(__dirname + '/public/index.html');
-  response.send('Hello Posting!!!');
-
+  var poll = req.body.poll
+  poll["open"] = true;
+  poll["id"] = Math.random()
+  res.redirect('/polls/' + poll["id"]);
 });
+
+app.get('/polls/:id', function (req, res){
+  res.render('poll')
+} )
 
 app.get('/', function(req, response){
   response.send('hello world');
@@ -41,6 +48,8 @@ app.get('/', function(req, response){
 // });
 
 app.set('port', process.env.PORT || 3000);
+app.set('view engine', 'ejs')
+app.set('views', path.join(__dirname, 'views'))
 
 io.on('connection', function (socket) {
   console.log('A user has connected.', io.engine.clientsCount);
