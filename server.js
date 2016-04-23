@@ -18,25 +18,28 @@ const bodyParser = require('body-parser')
 
 var votes = {};
 
+app.set('port', process.env.PORT || 3000);
+app.set('view engine', 'ejs')
+app.set('views', path.join(__dirname, 'views'))
+
+app.locals.title = 'Crowdsource';
+app.locals.poll = {};
+
 app.use(bodyParser());
-
-
 app.use(express.static('public'));
-// app.use(require('connect').bodyParser());
-
 
 app.post('/poll', function (req, res){
-  console.log(req.body)
-  // console.log(response)
-  // response.sendFile(__dirname + '/public/index.html');
   var poll = req.body.poll
   poll["open"] = true;
   poll["id"] = Math.random()
   res.redirect('/polls/' + poll["id"]);
+  app.locals.poll = poll
 });
 
 app.get('/polls/:id', function (req, res){
-  res.render('poll')
+  res.data = app.locals
+  console.log(res.data)
+  res.render('poll', { data: app.locals.poll })
 } )
 
 app.get('/', function(req, response){
@@ -47,9 +50,6 @@ app.get('/', function(req, response){
 // app.get('/', (request, response) => {
 // });
 
-app.set('port', process.env.PORT || 3000);
-app.set('view engine', 'ejs')
-app.set('views', path.join(__dirname, 'views'))
 
 io.on('connection', function (socket) {
   console.log('A user has connected.', io.engine.clientsCount);

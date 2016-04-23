@@ -1,1 +1,19 @@
-BOSS STATUS
+<!doctype html>
+<html>
+<head>
+  <div id="connection-count"></div>
+  <div id="status-message"></div>
+  <div id="choices">
+  <%= data.title %>
+    <% for (i = 0; i < data.options.length; i++) { %>
+      <button><%=data.options[i]%></button>
+  <% } %>
+  </div>
+  <div id="vote-message"></div>
+  <div id="current-tally"></div>
+</head>
+<body>
+  <!-- Make sure your JS is at the bottom of the body! -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/client.js"></script>
+</body>
