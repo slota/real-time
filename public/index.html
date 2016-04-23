@@ -1,22 +1,39 @@
 <!doctype html>
 <html>
-  <head>
-    <title>Please enter a poll title:</title>
-    <div id="answer">Enter an answer:</div>
-    <div id="connection-count"></div>
-    <div id="status-message"></div>
-    <div id="choices">
-      <button>A</button>
-      <button>B</button>
-      <button>C</button>
-      <button>D</button>
-    </div>
-    <div id="vote-message"></div>
-    <div id="current-tally"></div>
-  </head>
-  <body>
-    <!-- Make sure your JS is at the bottom of the body! -->
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/client.js"></script>
-  </body>
+<head>
+  <title>Please enter a poll title:</title>
+  <div id="answer">Enter an answer:</div>
+  <div id="connection-count"></div>
+  <div id="status-message"></div>
+  <div id="choices">
+    <button>A</button>
+    <button>B</button>
+    <button>C</button>
+    <button>D</button>
+  </div>
+  <div id="vote-message"></div>
+  <div id="current-tally"></div>
+</head>
+<form action="/poll" method="post">
+  <div class="container">
+    <label><h5>Please enter poll name.</h5></label>
+    <input type="text" name="poll[title]"><br><br>
+
+    <label><h5>Enter up to 5 poll questions</h5></label>
+    <input type="text" name="poll[options]"><br>
+    <input type="text" name="poll[options]"><br>
+    <input type="text" name="poll[options]"><br>
+    <input type="text" name="poll[options]"><br>
+    <input type="text" name="poll[options]"><br>
+
+    <label><h5>How long would you like the poll to remain open?</h5></label>
+    <input type="text" name="poll[runtime]" value="30"><br><br>
+    <input id="submit" type="submit" class="btn btn-default"></input>
+  </div>
+</form>
+<body>
+  <!-- Make sure your JS is at the bottom of the body! -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/client.js"></script>
+</body>
 </html>

@@ -3,6 +3,7 @@ const express = require('express');
 
 const app = express();
 
+
 const port = process.env.PORT || 3000;
 
 const server = http.createServer(app)
@@ -12,14 +13,28 @@ const server = http.createServer(app)
 
 const socketIo = require('socket.io');
 const io = socketIo(server);
+const bodyParser = require('body-parser')
 
 var votes = {};
 
-app.use(express.static('public'));
+app.use(bodyParser());
 
-app.get('/', function (req, response){
+
+app.use(express.static('public'));
+// app.use(require('connect').bodyParser());
+
+
+app.post('/poll', function (req, response){
+  console.log(req.body)
+  // console.log(response)
   // response.sendFile(__dirname + '/public/index.html');
-  response.send('Hello World!');
+  response.send('Hello Posting!!!');
+
+});
+
+app.get('/', function(req, response){
+  response.send('hello world');
+  console.log("IS THIS WORKING!?!")
 });
 
 // app.get('/', (request, response) => {
@@ -71,10 +86,10 @@ function countVotes(votes) {
   return voteCount;
 }
 
-if (!module.parent) {
-  app.listen(app.get('port'), () => {
-    console.log(`${app.locals.title} is running on ${app.get('port')}.`);
-  });
-}
+// if (!module.parent) {
+//   app.listen(app.get('port'), () => {
+//     console.log(`${app.locals.title} is running on ${app.get('port')}.`);
+//   });
+// }
 
 module.exports = app;
