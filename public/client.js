@@ -21,7 +21,6 @@ socket.on('voteMessage', function (message) {
 socket.on('voteCount', function (votes) {
   currentTally.innerText = JSON.stringify(votes, null, 4);
   console.log(votes);
-  console.log("fucked")
 });
 
 for (var i = 0; i < buttons.length; i++) {

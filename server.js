@@ -1,9 +1,12 @@
 const http = require('http');
+var helpers = require('express-helpers')();
 const express = require('express');
 
 const app = express();
+
 var path =require('path')
 
+app.locals.link_to = helpers.link_to;
 
 const port = process.env.PORT || 3000;
 
@@ -45,6 +48,7 @@ app.post('/poll', function (req, res){
 });
 
 app.get('/polls/:id', function (req, res){
+  console.log("boom")
   res.render('poll', { data: app.locals.poll })
 } )
 
