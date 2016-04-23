@@ -41,11 +41,15 @@ app.post('/poll', function (req, res){
   }
   app.locals.poll = poll
 
-  res.redirect('/polls/' + poll["id"]);
+  res.redirect('/admin-view/' + poll["id"]);
 });
 
 app.get('/polls/:id', function (req, res){
   res.render('poll', { data: app.locals.poll })
+} )
+
+app.get('/admin-view/:id', function (req, res){
+  res.render('admin-view', { data: app.locals.poll })
 } )
 
 app.get('/', function(req, response){
@@ -58,11 +62,12 @@ app.get('/', function(req, response){
 
 
 io.on('connection', function (socket) {
+
   console.log('A user has connected.', io.engine.clientsCount);
 
   io.sockets.emit('userConnection', io.engine.clientsCount);
 
-  socket.emit('statusMessage', 'You have connected.');
+  socket.emit('voteCount', countVotes(votes));
 
   socket.on('message', function (channel, message) {
     if (channel === 'voteCast') {
