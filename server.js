@@ -31,14 +31,20 @@ app.use(express.static('public'));
 app.post('/poll', function (req, res){
   var poll = req.body.poll
   poll["open"] = true;
+  console.log(req.body.poll)
   poll["id"] = Math.random()
-  res.redirect('/polls/' + poll["id"]);
+  poll["voteCount"] = {}
+  for(i = 0; i < poll.options.length; i++){
+    if(poll.options[i] !== "") {
+      poll.voteCount[poll.options[i]] = 0
+    }
+  }
   app.locals.poll = poll
+
+  res.redirect('/polls/' + poll["id"]);
 });
 
 app.get('/polls/:id', function (req, res){
-  res.data = app.locals
-  console.log(res.data)
   res.render('poll', { data: app.locals.poll })
 } )
 
@@ -61,7 +67,6 @@ io.on('connection', function (socket) {
   socket.on('message', function (channel, message) {
     if (channel === 'voteCast') {
       votes[socket.id] = message;
-      console.log(votes[socket.id] + "hola")
       socket.emit('voteCount', countVotes(votes));
       socket.emit('voteMessage', "You voted for " + message);
     }
@@ -83,16 +88,18 @@ io.on('connection', function (socket) {
 });
 
 function countVotes(votes) {
-  var voteCount = {
-      A: 0,
-      B: 0,
-      C: 0,
-      D: 0
-  };
+  // console.log(votes.value)
+  // console.log(app.locals.poll.voteCount)
+  // console.log(!(votes.value in app.locals.poll.voteCount))
+  // if(!(votes.value in app.locals.poll.voteCount)){
+  //   app.locals.poll.voteCount[votes.value] = 0
+  // }
+  // //   app.locals.poll.voteCount.votes.value = 0
+  // // }
   for (var vote in votes) {
-    voteCount[votes[vote]]++
+    app.locals.poll.voteCount[votes[vote]]++
   }
-  return voteCount;
+  return app.locals.poll.voteCount;
 }
 
 // if (!module.parent) {

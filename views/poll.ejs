@@ -6,7 +6,9 @@
   <div id="choices">
   <%= data.title %>
     <% for (i = 0; i < data.options.length; i++) { %>
-      <button><%=data.options[i]%></button>
+      <% if(data.options[i] !== "") { %>
+        <br><button><%=data.options[i]%></button>
+      <% } %>
   <% } %>
   </div>
   <div id="vote-message"></div>
