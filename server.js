@@ -38,14 +38,11 @@ app.post('/admin-view', function (req,res){
 })
 
 app.post('/poll', function (req, res){
-  console.log("poll")
   var poll = req.body.poll
   poll["open"] = true;
-  console.log(req.body.poll)
   poll["id"] = Math.random()
   poll["voteCount"] = {}
   poll["status"] = "open"
-  poll["time"] = Number(poll["time"])
   for(i = 0; i < poll.options.length; i++){
     if(poll.options[i] !== "") {
       poll.voteCount[poll.options[i]] = 0
@@ -79,7 +76,6 @@ io.on('connection', function (socket) {
     if (channel === 'voteCast') {
       votes[socket.id] = message;
       countVotes(votes);
-      console.log(votes)
       votes = {}
       socket.emit('voteMessage', "You voted for " + message);
       io.sockets.emit('displayCount', app.locals.poll);
@@ -101,7 +97,11 @@ function countVotes(votes) {
 }
 
 function setPollTimer(poll){
-  if((typeof poll['time']) === 'number'){
+  if(poll["time"] !== "None"){
+    poll["time"] = Number(poll["time"])
+  }
+
+  if((typeof poll['time']) === 'number' && ((poll['time']) !== NaN)){
     setTimeout(function(){
       app.locals.poll.status = "closed"
       io.sockets.emit('pollClosed')
