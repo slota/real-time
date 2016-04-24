@@ -31,6 +31,12 @@ app.locals.poll = {};
 app.use(bodyParser());
 app.use(express.static('public'));
 
+app.post('/admin-view', function (req,res){
+  console.log("poll is closed")
+  app.locals.poll.status = "closed"
+  res.redirect('/admin-view/' + app.locals.poll["id"]);
+})
+
 app.post('/poll', function (req, res){
   console.log("poll")
   var poll = req.body.poll
@@ -38,6 +44,7 @@ app.post('/poll', function (req, res){
   console.log(req.body.poll)
   poll["id"] = Math.random()
   poll["voteCount"] = {}
+  poll["status"] = "open"
   for(i = 0; i < poll.options.length; i++){
     if(poll.options[i] !== "") {
       poll.voteCount[poll.options[i]] = 0

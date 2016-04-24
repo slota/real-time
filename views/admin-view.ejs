@@ -1,8 +1,16 @@
-ADMIN POLL
+Administration View Poll
 <div id="current-tally"></div>
 
+<%- link_to('Link to Poll', '/polls/' + data.id)%>
+<br>
+<% if(poll.status === "closed"){ %>
+  Poll is closed
+<%} else{ %>
+  <form action="/admin-view" method="post">
+    <input id="close-poll" type="submit" value="Close Poll"></div>
+  </form>
+<%}%>
 
-<%- link_to('Link to poll', '/polls/' + data.id)%>
 <body>
   <!-- Make sure your JS is at the bottom of the body! -->
   <script src="/socket.io/socket.io.js"></script>
