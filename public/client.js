@@ -8,12 +8,8 @@ var voteMessage = document.getElementById('vote-message');
 var haventVoted = true;
 var closedPoll = false;
 
-socket.on('usersConnected', function (count) {
-  connectionCount.innerText = 'Connected Users: ' + count;
-});
-
 socket.on('pollClosed', function(message){
-  closedPoll = true
+  closedPoll = true;
   statusMessage.innerTest = message;
 })
 
@@ -21,9 +17,11 @@ socket.on('statusMessage', function (message) {
   statusMessage.innerText = message;
 });
 
-socket.on('displayCount', function (message) {
-  currentTally.innerText = JSON.stringify(message, null, 4);
-
+socket.on('displayCount', function (poll) {
+  if(poll.status === 'closed'){
+    closedPoll = true
+  }
+  currentTally.innerText = JSON.stringify(poll["voteCount"], null, 4);
 });
 
 socket.on('voteMessage', function (message) {
@@ -37,13 +35,12 @@ socket.on('voteCount', function (votes) {
 
 for (var i = 0; i < buttons.length; i++) {
 
-
   buttons[i].addEventListener('click', function () {
-    if (haventVoted) {
+    if (closedPoll) {
+      voteMessage.innerText = "This poll has been ended"
+    } else if (haventVoted) {
       haventVoted = false
       socket.send('voteCast', this.innerText);
-    } else if (closedPoll) {
-      voteMessage.innerText = "This poll has been ended"
     } else {
       voteMessage.innerText = "You've already voted, sorry :("
     }
