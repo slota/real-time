@@ -75,18 +75,21 @@ io.on('connection', function (socket) {
 
 
   socket.on('message', function (channel, message) {
-    console.log(channel)
-    console.log(message)
     if (channel === 'voteCast') {
       votes[socket.id] = message;
+      console.log("before countVotes")
+      console.log(votes[socket.id])
       countVotes(votes);
+      votes = {}
+      console.log("after countvotes")
       socket.emit('voteMessage', "You voted for " + message);
-      socket.emit('displayCount', app.locals.poll["voteCount"]);
+      io.sockets.emit('displayCount', app.locals.poll["voteCount"]);
     }
   });
 
-  console.log("probs not getting here the second time")
-  socket.emit('displayCount', app.locals.poll["voteCount"]);
+  console.log("sockets")
+  console.log(app.locals.poll["voteCount"])
+  io.sockets.emit('displayCount', app.locals.poll["voteCount"]);
 
 
   socket.on('disconnect', function () {
@@ -112,7 +115,8 @@ function countVotes(votes) {
   // }
   // //   app.locals.poll.voteCount.votes.value = 0
   // // }
-  console.log("dumb")
+  console.log( "stage 2")
+  console.log(votes)
   for (var vote in votes) {
     app.locals.poll.voteCount[votes[vote]]++
   }
