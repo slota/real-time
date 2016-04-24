@@ -32,6 +32,7 @@ app.use(bodyParser());
 app.use(express.static('public'));
 
 app.post('/poll', function (req, res){
+  console.log("poll")
   var poll = req.body.poll
   poll["open"] = true;
   console.log(req.body.poll)
@@ -48,18 +49,19 @@ app.post('/poll', function (req, res){
 });
 
 app.get('/polls/:id', function (req, res){
-  console.log("boom")
+  console.log("polls id")
   res.render('poll', { data: app.locals.poll })
 } )
 
 app.get('/admin-view/:id', function (req, res){
+  console.log("get admin view")
   res.render('admin-view', { data: app.locals.poll })
 } )
 
-app.get('/', function(req, response){
-  response.send('hello world');
-  console.log("IS THIS WORKING!?!")
-});
+// app.get('/', function(req, response){
+//   response.send('hello world');
+//   console.log("IS THIS WORKING!?!")
+// });
 
 // app.get('/', (request, response) => {
 // });
@@ -71,20 +73,25 @@ io.on('connection', function (socket) {
 
   io.sockets.emit('userConnection', io.engine.clientsCount);
 
-  socket.emit('voteCount', countVotes(votes));
 
   socket.on('message', function (channel, message) {
+    console.log(channel)
+    console.log(message)
     if (channel === 'voteCast') {
       votes[socket.id] = message;
-      socket.emit('voteCount', countVotes(votes));
+      countVotes(votes);
       socket.emit('voteMessage', "You voted for " + message);
+      socket.emit('displayCount', app.locals.poll["voteCount"]);
     }
   });
+
+  console.log("probs not getting here the second time")
+  socket.emit('displayCount', app.locals.poll["voteCount"]);
+
 
   socket.on('disconnect', function () {
     console.log('A user has disconnected.', io.engine.clientsCount);
     delete votes[socket.id];
-    socket.emit('voteCount', countVotes(votes));
     io.sockets.emit('userConnection', io.engine.clientsCount);
   });
 
@@ -105,6 +112,7 @@ function countVotes(votes) {
   // }
   // //   app.locals.poll.voteCount.votes.value = 0
   // // }
+  console.log("dumb")
   for (var vote in votes) {
     app.locals.poll.voteCount[votes[vote]]++
   }
