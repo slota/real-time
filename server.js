@@ -45,12 +45,14 @@ app.post('/poll', function (req, res){
   poll["id"] = Math.random()
   poll["voteCount"] = {}
   poll["status"] = "open"
+  poll["time"] = Number(poll["time"])
   for(i = 0; i < poll.options.length; i++){
     if(poll.options[i] !== "") {
       poll.voteCount[poll.options[i]] = 0
     }
   }
   app.locals.poll = poll
+  setPollTimer(poll)
 
   res.redirect('/admin-view/' + poll["id"]);
 });
@@ -77,6 +79,7 @@ io.on('connection', function (socket) {
     if (channel === 'voteCast') {
       votes[socket.id] = message;
       countVotes(votes);
+      console.log(votes)
       votes = {}
       socket.emit('voteMessage', "You voted for " + message);
       io.sockets.emit('displayCount', app.locals.poll);
@@ -95,6 +98,15 @@ function countVotes(votes) {
     app.locals.poll.voteCount[votes[vote]]++
   }
   return app.locals.poll.voteCount;
+}
+
+function setPollTimer(poll){
+  if((typeof poll['time']) === 'number'){
+    setTimeout(function(){
+      app.locals.poll.status = "closed"
+      io.sockets.emit('pollClosed')
+    }, (poll['time'] * 1000 * 60))
+  }
 }
 
 module.exports = app;
