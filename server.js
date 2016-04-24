@@ -1,5 +1,6 @@
 const http = require('http');
 var helpers = require('express-helpers')();
+var Firebase = require("firebase");
 const express = require('express');
 
 const app = express();
@@ -62,14 +63,20 @@ app.get('/admin-view/:id', function (req, res){
   res.render('admin-view', { data: app.locals.poll })
 } )
 
+app.get('/past-polls', function (req, res){
+  res.render('past-polls')
+} )
+
 io.on('connection', function (socket) {
 
   console.log('A user has connected.', io.engine.clientsCount);
 
+  socket.emit('showPolls')
+
   io.sockets.emit('displayCount', app.locals.poll);
 
   if(app.locals.poll.status === "closed"){
-    io.sockets.emit('pollClosed', "Poll is Closed")
+    closePoll(app.locals.poll)
   }
 
   socket.on('message', function (channel, message) {
@@ -104,9 +111,15 @@ function setPollTimer(poll){
   if((typeof poll['time']) === 'number' && ((poll['time']) !== NaN)){
     setTimeout(function(){
       app.locals.poll.status = "closed"
-      io.sockets.emit('pollClosed')
+      closePoll(poll)
     }, (poll['time'] * 1000 * 60))
   }
 }
+
+function closePoll(poll){
+  io.sockets.emit('pollClosed', poll)
+}
+
+
 
 module.exports = app;

@@ -8,9 +8,10 @@ var voteMessage = document.getElementById('vote-message');
 var haventVoted = true;
 var closedPoll = false;
 
-socket.on('pollClosed', function(message){
+socket.on('pollClosed', function(poll){
   closedPoll = true;
-  statusMessage.innerTest = message;
+  var record = JSON.stringify(poll);
+  localStorage.setItem(poll.id, record);
 })
 
 socket.on('statusMessage', function (message) {
@@ -34,7 +35,6 @@ socket.on('voteCount', function (votes) {
 });
 
 for (var i = 0; i < buttons.length; i++) {
-
   buttons[i].addEventListener('click', function () {
     if (closedPoll) {
       voteMessage.innerText = "This poll has been ended"
