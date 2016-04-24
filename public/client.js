@@ -6,10 +6,16 @@ var buttons = document.querySelectorAll('#choices button');
 var currentTally = document.getElementById('current-tally');
 var voteMessage = document.getElementById('vote-message');
 var haventVoted = true;
+var closedPoll = false;
 
 socket.on('usersConnected', function (count) {
   connectionCount.innerText = 'Connected Users: ' + count;
 });
+
+socket.on('pollClosed', function(message){
+  closedPoll = true
+  statusMessage.innerTest = message;
+})
 
 socket.on('statusMessage', function (message) {
   statusMessage.innerText = message;
@@ -36,6 +42,8 @@ for (var i = 0; i < buttons.length; i++) {
     if (haventVoted) {
       haventVoted = false
       socket.send('voteCast', this.innerText);
+    } else if (closedPoll) {
+      voteMessage.innerText = "This poll has been ended"
     } else {
       voteMessage.innerText = "You've already voted, sorry :("
     }

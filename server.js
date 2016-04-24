@@ -69,7 +69,6 @@ io.on('connection', function (socket) {
 
   io.sockets.emit('userConnection', io.engine.clientsCount);
 
-
   socket.on('message', function (channel, message) {
     if (channel === 'voteCast') {
       votes[socket.id] = message;
@@ -80,9 +79,12 @@ io.on('connection', function (socket) {
     }
   });
 
-  console.log("sockets")
-  console.log(app.locals.poll["voteCount"])
   io.sockets.emit('displayCount', app.locals.poll["voteCount"]);
+
+  if(app.locals.poll.status === "closed"){
+    io.sockets.emit('pollClosed', "Poll is Closed")
+  }
+
 
   socket.on('disconnect', function () {
     console.log('A user has disconnected.', io.engine.clientsCount);

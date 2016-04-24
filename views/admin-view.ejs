@@ -1,11 +1,10 @@
 Administration View Poll
 <div id="current-tally"></div>
-
-<%- link_to('Link to Poll', '/polls/' + data.id)%>
 <br>
 <% if(poll.status === "closed"){ %>
   Poll is closed
 <%} else{ %>
+  <%- link_to('Link to Poll', '/polls/' + data.id)%>
   <form action="/admin-view" method="post">
     <input id="close-poll" type="submit" value="Close Poll"></div>
   </form>
